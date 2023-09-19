@@ -1,12 +1,20 @@
 package com.block7crud.persona.application;
 
+import com.block7crud.error.RestExceptionHandler;
+import com.block7crud.error.Unprocessable;
 import com.block7crud.persona.domain.Persona;
 import com.block7crud.persona.domain.PersonaMapper;
 import com.block7crud.persona.infrastructure.dto.PersonaOutputDto;
 import com.block7crud.persona.infrastructure.repository.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.webjars.NotFoundException;
+
+
 
 @Service
 public class PersonaServiceImpl implements PersonaService {
@@ -70,37 +78,38 @@ public class PersonaServiceImpl implements PersonaService {
     }
 
     public boolean comprobar(Persona persona) throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+
         if (persona.getUsuario() == null) {
-            throw new Exception("Usuario no puede ser nulo");
-        }
+            throw new Unprocessable("Usuario no puede ser nulo"); }
         if (persona.getName().length() > 10) {
-            throw new Exception("Longitud de usuario no puede ser superior a 10 caracteres");
+             throw new Unprocessable("Longitud de usuario no puede ser superior a 10 caracteres");
         }
         if (persona.getName().length() < 6) {
-            throw new Exception("Longitud de usuario no puede ser menor a 6 caracteres");
+             throw new Unprocessable("Longitud de usuario no puede ser menor a 6 caracteres");
         }
         if (persona.getPassword() == null) {
-            throw new Exception("La contraseña no puede ser null");
+             throw new Unprocessable("La contraseña no puede ser null");
         }
         if (persona.getName() == null) {
-            throw new Exception("El nombre no puede ser null");
+             throw new Unprocessable("El nombre no puede ser null");
         }
         if (persona.getCompany_email() == null) {
-            throw new Exception("El email de la compañia no puede ser null");
+             throw new Unprocessable("El email de la compañia no puede ser null");
         }
         if (persona.getPersonal_email() == null) {
-            throw new Exception("El email de personal no puede ser null");
+             throw new Unprocessable("El email de personal no puede ser null");
         }
         if (persona.getCity() == null) {
-            throw new Exception("La ciudad no puede ser null");
+             throw new Unprocessable("La ciudad no puede ser null");
         }
         try {
             persona.isActive();
         } catch (Exception e) {
-            throw new Exception("El campo activo no puede ser null");
+             throw new Unprocessable("El campo activo no puede ser null");
         }
         if (persona.getCreated_date() == null) {
-            throw new Exception("La fechad de creación no puede ser null");
+             throw new Unprocessable("La fechad de creación no puede ser null");
         }
         return true;
     }
