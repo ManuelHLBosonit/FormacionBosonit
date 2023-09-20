@@ -1,16 +1,19 @@
 package com.block7crud.persona.infrastructure.dto;
 
+import com.block7crud.profesor.domain.Profesor;
+import com.block7crud.student.domain.Student;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonaOutputDto {
-    private int id;
+    private String id_persona;
     private String usuario;
     private String password;
     private String name;

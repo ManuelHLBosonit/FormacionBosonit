@@ -6,6 +6,8 @@ import com.block7crud.persona.domain.Persona;
 import com.block7crud.persona.domain.PersonaMapper;
 import com.block7crud.persona.infrastructure.dto.PersonaInputDto;
 import com.block7crud.persona.infrastructure.dto.PersonaOutputDto;
+import com.block7crud.profesor.domain.ProfesorFeignClient;
+import com.block7crud.profesor.infrastructure.dto.ProfesorOutputDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +16,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("persona")
 public class PersonaController {
-
     @Autowired
-    PersonaServiceImpl personaService;
+    private ProfesorFeignClient profesorFeignClient;
+
+    @GetMapping("/profesor/{id}")
+    public ProfesorOutputDto getProfesor(@PathVariable String id) {
+        return profesorFeignClient.getProfesor(id);
+    }
+    @Autowired
+    PersonaService personaService;
 
     @PostMapping
     public ResponseEntity<PersonaOutputDto> addPersona(@RequestBody PersonaInputDto personaInputDto) throws Exception {
@@ -33,14 +41,14 @@ public class PersonaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePerson(@PathVariable int id){
+    public ResponseEntity<String> deletePerson(@PathVariable String id){
         String respuesta = personaService.deleteById(id);
         return ResponseEntity.ok().body(respuesta);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PersonaOutputDto> searchById(@PathVariable int id){
-        return ResponseEntity.ok().body(PersonaMapper.INSTANCE.PersonaToPersonaOutputDto(personaService.searchById(id)));
+    public ResponseEntity<?> searchById(@PathVariable String id){
+        return ResponseEntity.ok().body(personaService.searchById(id));
     }
 
     @GetMapping("nombre/{nombre}")
@@ -49,7 +57,7 @@ public class PersonaController {
     }
 
     @GetMapping
-    public Iterable<PersonaOutputDto> getAll(){
+    public Iterable<?> getAll(){
         return personaService.getAll();
     }
 }

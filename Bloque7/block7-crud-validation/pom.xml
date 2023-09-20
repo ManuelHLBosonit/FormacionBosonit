@@ -70,6 +70,13 @@
 			<artifactId>webjars-locator-core</artifactId>
 			<version>0.52</version>
 		</dependency>
+
+		<!--Feign -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+			<version>4.0.4</version>
+		</dependency>
 	</dependencies>
 
 

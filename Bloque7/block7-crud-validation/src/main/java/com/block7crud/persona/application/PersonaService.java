@@ -8,11 +8,12 @@ public interface PersonaService {
 
     Persona modifyPeron(Persona persona);
 
-    String deleteById(int id);
 
-    Persona searchById(int id);
+    String deleteById(String id);
+
+    Persona searchById(String id);
 
     Iterable<PersonaOutputDto> getByName(String name);
 
-    Iterable<PersonaOutputDto> getAll();
+    Iterable<?> getAll();
 }

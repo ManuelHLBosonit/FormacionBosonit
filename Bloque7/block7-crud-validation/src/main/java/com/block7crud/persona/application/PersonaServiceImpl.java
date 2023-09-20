@@ -1,6 +1,5 @@
 package com.block7crud.persona.application;
 
-import com.block7crud.error.RestExceptionHandler;
 import com.block7crud.error.Unprocessable;
 import com.block7crud.persona.domain.Persona;
 import com.block7crud.persona.domain.PersonaMapper;
@@ -8,12 +7,10 @@ import com.block7crud.persona.infrastructure.dto.PersonaOutputDto;
 import com.block7crud.persona.infrastructure.repository.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.webjars.NotFoundException;
 
+import java.util.Optional;
 
 
 @Service
@@ -30,19 +27,19 @@ public class PersonaServiceImpl implements PersonaService {
 
     @Override
     public Persona modifyPeron(Persona persona) throws NotFoundException {
-        personaRepository.findById(persona.getId()).ifPresentOrElse(
+        personaRepository.findById(persona.getId_persona()).ifPresentOrElse(
                 existe -> {
                     personaRepository.save(persona);
                 },
                 () -> {
-                    throw new NotFoundException("La id " + persona.getId() + " no se ha podido encontrar");
+                    throw new NotFoundException("La id " + persona.getId_persona() + " no se ha podido encontrar");
                 }
         );
         return persona;
     }
 
     @Override
-    public String deleteById(int id) {
+    public String deleteById(String id) {
 
         personaRepository.findById(id).ifPresentOrElse(
                 existe -> {
@@ -58,7 +55,7 @@ public class PersonaServiceImpl implements PersonaService {
 
 
     @Override
-    public Persona searchById(int id) {
+    public Persona searchById(String id) {
         return personaRepository.findById(id).orElseThrow(() -> {
             throw new NotFoundException("La id " + id + " no se ha podido encontrar");
         });
@@ -73,8 +70,20 @@ public class PersonaServiceImpl implements PersonaService {
     }
 
     @Override
-    public Iterable<PersonaOutputDto> getAll() {
-        return personaRepository.findAll().stream().map(per -> PersonaMapper.INSTANCE.PersonaToPersonaOutputDto(per)).toList();
+    public Iterable<?> getAll() {
+        return personaRepository.findAll().stream().map(per -> {
+
+            Object perso = null;
+            if (per.getStudent() != null && per.getStudent().getId_student() != null){
+                 perso = per.personaStudentOutputDto();
+            }else if (per.getProfesor() != null && per.getProfesor().getId_profesor() != null){
+                perso = per.personaProfesorOutputDto();
+            }else{
+                 perso = PersonaMapper.INSTANCE.PersonaToPersonaOutputDto(per);
+            }
+            return perso;
+        }
+        ).toList();
     }
 
     public boolean comprobar(Persona persona) throws Exception {
