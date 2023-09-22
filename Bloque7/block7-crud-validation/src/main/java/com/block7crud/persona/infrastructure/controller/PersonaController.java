@@ -13,18 +13,51 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("persona")
 public class PersonaController {
     @Autowired
     private ProfesorFeignClient profesorFeignClient;
 
+    @Autowired
+    PersonaServiceImpl personaService;
+
+    //Ejericicio 4
     @GetMapping("/profesor/{id}")
     public ProfesorOutputDto getProfesor(@PathVariable String id) {
         return profesorFeignClient.getProfesor(id);
     }
-    @Autowired
-    PersonaService personaService;
+
+
+    //Get
+    @GetMapping("/{id}")
+    public ResponseEntity<?> searchById(@PathVariable String id, @RequestParam(defaultValue = "simple") String ouputType){
+        Persona persona = personaService.searchById(id);
+        return ResponseEntity.ok().body(comprobar(persona, ouputType));
+    }
+
+    private Object comprobar(Persona persona, String ouputType) {
+        if (ouputType.equals("full")){
+            if (persona.getStudent() != null) return persona.personaStudentOutputDto();
+            if (persona.getProfesor() != null) return persona.personaStudentOutputDto();
+        }
+        return PersonaMapper.INSTANCE.PersonaToPersonaOutputDto(persona);
+    }
+
+    @GetMapping("nombre/{nombre}")
+    public Iterable<?> searchByName(@PathVariable String nombre, @RequestParam(defaultValue = "simple") String ouputType){
+        return personaService.getByName(nombre, ouputType);
+    }
+
+
+    @GetMapping
+    public Iterable<?> getAll(@RequestParam(defaultValue = "simple") String ouputType){
+        return personaService.getAll(ouputType);
+    }
+
 
     @PostMapping
     public ResponseEntity<PersonaOutputDto> addPersona(@RequestBody PersonaInputDto personaInputDto) throws Exception {
@@ -45,19 +78,6 @@ public class PersonaController {
         String respuesta = personaService.deleteById(id);
         return ResponseEntity.ok().body(respuesta);
     }
+    
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> searchById(@PathVariable String id){
-        return ResponseEntity.ok().body(personaService.searchById(id));
-    }
-
-    @GetMapping("nombre/{nombre}")
-    public Iterable<PersonaOutputDto> searchByName(@PathVariable String nombre){
-        return personaService.getByName(nombre);
-    }
-
-    @GetMapping
-    public Iterable<?> getAll(){
-        return personaService.getAll();
-    }
 }

@@ -16,7 +16,6 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "estudiantes")
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -36,6 +35,11 @@ public class Student {
     private Profesor profesor;
 
     @ManyToMany
+    @JoinTable(
+            name = "asignatura_student", // Nombre de la tabla de unión deseado
+            joinColumns = @JoinColumn(name = "student_id"), // Columna que hace referencia a Asignatura
+            inverseJoinColumns = @JoinColumn(name = "asignatura_id") // Columna que hace referencia a Student
+    )
     Set<Asignatura> asignaturas;
 
 

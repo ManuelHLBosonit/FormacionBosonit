@@ -1,6 +1,7 @@
 package com.block7crud.asignatura.infrastructure.controller;
 
 import com.block7crud.asignatura.application.AsignaturaService;
+import com.block7crud.asignatura.application.AsignaturaServiceImpl;
 import com.block7crud.asignatura.domain.AsignaturaMapper;
 import com.block7crud.asignatura.infrastructure.dto.AsignaturaInputDto;
 import com.block7crud.asignatura.infrastructure.dto.AsignaturaOutputDto;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class AsignaturaController {
 
     @Autowired
-    AsignaturaService asignaturaService;
+    AsignaturaServiceImpl asignaturaService;
 
     @GetMapping("/{id}")
     public ResponseEntity<AsignaturaOutputDto> getAsignaturaById(@PathVariable String id){
@@ -24,6 +25,7 @@ public class AsignaturaController {
     public Iterable<AsignaturaOutputDto> getAllAsignaturas(){
         return asignaturaService.getAllAsignaturas();
     }
+
     @PostMapping()
     public ResponseEntity<AsignaturaOutputDto> addAsignatura(@RequestBody AsignaturaInputDto asignaturaInputDto){
         return ResponseEntity.ok().body(AsignaturaMapper.INSTANCE.AsignaturaToAsignaturaOutputDto(asignaturaService.addAsignatura(AsignaturaMapper.INSTANCE.asignaturaInputDtoToAsignatura(asignaturaInputDto))));
@@ -33,5 +35,12 @@ public class AsignaturaController {
     public ResponseEntity<AsignaturaOutputDto> updateAsignatura(@RequestBody AsignaturaInputDto asignaturaInputDto){
         return ResponseEntity.ok().body(AsignaturaMapper.INSTANCE.AsignaturaToAsignaturaOutputDto(asignaturaService.updateAsignatura(AsignaturaMapper.INSTANCE.asignaturaInputDtoToAsignatura(asignaturaInputDto))));
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteById(@PathVariable String id){
+        String respuesta = asignaturaService.deleteById(id);
+        return ResponseEntity.ok().body(respuesta); }
+
+
 
 }

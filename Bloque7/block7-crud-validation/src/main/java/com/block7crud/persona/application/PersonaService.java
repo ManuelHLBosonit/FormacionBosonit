@@ -13,7 +13,7 @@ public interface PersonaService {
 
     Persona searchById(String id);
 
-    Iterable<PersonaOutputDto> getByName(String name);
+    Iterable<?> getByName(String name, String op);
 
-    Iterable<?> getAll();
+    Iterable<?> getAll(String op);
 }

@@ -20,7 +20,7 @@ public class ProfesorController {
     }
 
     @PostMapping("/estudiante")
-    public ResponseEntity<String> addStudentToTeacher(@RequestParam String id_student, @RequestParam String id_profesor){
+    public ResponseEntity<String> addStudentToProfesor(@RequestParam String id_student, @RequestParam String id_profesor){
         profesorService.addStudent(id_student, id_profesor);
         return ResponseEntity.ok().body("Student with id " + id_student + " added successfully to teacher with id " + id_profesor);
     }

@@ -7,6 +7,7 @@ import com.block7crud.profesor.domain.Profesor;
 import com.block7crud.student.domain.Student;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 
@@ -37,10 +38,10 @@ public class Persona {
     private Date termination;
 
     //Relaciones
-    @OneToOne
+    @OneToOne(mappedBy = "persona", cascade = CascadeType.ALL, orphanRemoval = true)
     private Student student;
-
-    @OneToOne
+    //Por si eliminamos una persona se elimina el otro
+    @OneToOne(mappedBy = "persona", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profesor profesor;
 
 

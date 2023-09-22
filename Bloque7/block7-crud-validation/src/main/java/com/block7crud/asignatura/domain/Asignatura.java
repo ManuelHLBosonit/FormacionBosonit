@@ -26,6 +26,12 @@ public class Asignatura {
     private Date finish_date;
 
     //Relaciones
-    @ManyToMany(mappedBy = "asignaturas")
+    @ManyToMany
+    //Para que solo cree una tabla
+    @JoinTable(
+            name = "asignatura_student", // Nombre de la tabla de unión deseado
+            joinColumns = @JoinColumn(name = "asignatura_id"), // Columna que hace referencia a Asignatura
+            inverseJoinColumns = @JoinColumn(name = "student_id") // Columna que hace referencia a Student
+    )
     Set<Student> students;
 }

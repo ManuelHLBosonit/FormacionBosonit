@@ -4,7 +4,9 @@ import com.block7crud.asignatura.domain.Asignatura;
 import com.block7crud.asignatura.domain.AsignaturaMapper;
 import com.block7crud.asignatura.infrastructure.dto.AsignaturaOutputDto;
 import com.block7crud.asignatura.infrastructure.repository.AsignaturaRepository;
+import com.block7crud.persona.domain.Persona;
 import com.block7crud.student.domain.Student;
+import com.block7crud.student.infrastructure.dto.StudentOutputDto;
 import com.block7crud.student.infrastructure.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,15 +54,20 @@ public class AsignaturaServiceImpl implements AsignaturaService{
 
     @Override
     public String deleteById(String id) {
-        asignaturaRepository.findById(id).ifPresentOrElse(
-                existe -> {
-                    asignaturaRepository.deleteById(id);
+        Asignatura asignatura = asignaturaRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("La id " + id + " no se ha podido encontrar"));
 
-                },
-                () -> {
-                    throw new NotFoundException("La id " + id + " no se ha podido encontrar");
-                }
-        );
+
+        if (asignatura.getStudents() != null && asignatura.getStudents().size() == 0){
+            asignaturaRepository.deleteById(id);
+            return "Id " + id + " eliminado correctamente";
+        }
+        for (Student student:
+             asignatura.getStudents()) {
+            student.getAsignaturas().remove(asignatura);
+            studentRepository.save(student);
+        }
+        asignaturaRepository.deleteById(id);
         return "Id " + id + " eliminado correctamente";
     }
 }

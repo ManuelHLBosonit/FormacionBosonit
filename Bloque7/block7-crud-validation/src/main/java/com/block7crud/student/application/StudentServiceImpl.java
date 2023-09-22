@@ -38,7 +38,8 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(
                         () -> new NotFoundException("No se encuentra la ID de la persona")
                 );
-        if (person.getProfesor() != null && person.getProfesor().getId_profesor() != null) new NotFoundException("Esta persona ya tiene un profesor asignado");
+        if (person.getProfesor() != null && person.getProfesor().getId_profesor() != null)throw new NotFoundException("Esta persona ya tiene un profesor asignado");
+        if (person.getStudent() != null && person.getStudent().getId_student() != null)throw new NotFoundException("Esta persona ya tiene un estudiante asignado");
 
         Student student1 = StudentMapper.INSTANCE.studentInputDtoToStudent(student);
 
@@ -106,8 +107,9 @@ public class StudentServiceImpl implements StudentService {
     }
     @Override
     public void addStudentToAsignatura(String id_student, String id_asignatura) {
+        System.out.println("id_asignatura");
         Student student = studentRepository.findById(id_student).orElseThrow(
-                () -> new NotFoundException("La id " + id_asignatura + " no se ha podido encontrar")
+                () -> new NotFoundException("La id " + id_student + " no se ha podido encontrar")
         );
 
         Asignatura asignatura = asignaturaRepository.findById(id_asignatura).orElseThrow(
@@ -135,7 +137,7 @@ public class StudentServiceImpl implements StudentService {
         );
 
         List<Asignatura> asignaturas = asignaturaRepository.findAllById(id_asignatura);
-
+        System.out.println(asignaturas.size());
         for (Asignatura asignatura : asignaturas) {
             asignatura.getStudents().add(student);
         }

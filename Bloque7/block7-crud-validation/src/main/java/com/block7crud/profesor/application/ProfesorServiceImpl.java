@@ -40,7 +40,10 @@ public class ProfesorServiceImpl implements ProfesorService{
         Persona person = personRepository.findById(profesorInputDto.getId_persona()).orElseThrow(
                 () -> new NotFoundException("La id " + profesorInputDto.getId_persona() + " no se ha podido encontrar")
         );
-        if (person.getStudent() != null && person.getStudent().getId_student() != null) new NotFoundException("Esta persona ya tiene un estudiante asignado");
+        //Comprobar que no tiene un estudiante o profesor
+        if (person.getStudent() != null && person.getStudent().getId_student() != null)throw  new NotFoundException("Esta persona ya tiene un estudiante asignado");
+        if (person.getProfesor() != null && person.getProfesor().getId_profesor() != null)throw new NotFoundException("Esta persona ya tiene un profesor asignado");
+
         Profesor profesor = ProfesorMapper.INSTANCE.profesorInputDtoToProfesor(profesorInputDto);
 
         person.setProfesor(profesor);

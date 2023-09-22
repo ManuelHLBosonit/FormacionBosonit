@@ -30,7 +30,7 @@ public class Profesor {
     @JoinColumn(name = "id_persona", nullable = false, unique = true)
     private Persona persona;
 
-    @OneToMany(mappedBy = "profesor")
+    @OneToMany(mappedBy = "profesor", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Student> students;
 
     public ProfesorOutputDto profesorToProfesorOutput(){
